@@ -7,31 +7,36 @@ def load_and_process(image_path):
     # Load the image
     img = Image.open(image_path)
 
-    # Process the image - creates a very large array
-    # The dtype=float64 and large dimensions cause memory issues
-    image_data = [[[float(x) for x in range(64)] for _ in range(5000)] for _ in range(5000)]
+     # Resize to something manageable
+    img = img.resize((500, 500))
 
-    return np.array(image_data)
+    # Convert image to a small NumPy array
+    image_data = np.array(img, dtype=np.uint8)
 
+    img.close()
+
+    return image_data
 def process_images(image_files):
-    all_image_data = []
 
     for image_file in image_files:
-        # This adds a huge array to memory for each image without releasing previous ones
-        all_image_data.append(load_and_process(image_file))
-
-    return all_image_data
+          yield load_and_process(image_file)
+       
 
 def main():
     # Get list of image files
     image_directory = "sample_images"
-    image_files = [os.path.join(image_directory, f) for f in os.listdir(image_directory) if f.endswith('.jpg')]
+    image_files = [
+        os.path.join(image_directory, f)
+        for f in os.listdir(image_directory)
+        if f.endswith('.jpg')
+    ]
 
-    # Process all images at once - memory intensive
-    processed_data = process_images(image_files)
+    count = 0
 
-    # Save or display results...
-    print(f"Processed {len(processed_data)} images")
+    for image_data in process_images(image_files):
+        # Save/display/process image here
+        count += 1
 
-if __name__ == "__main__":
-    main()
+        del image_data  # release memory
+
+    print(f"Processed {count} images")
