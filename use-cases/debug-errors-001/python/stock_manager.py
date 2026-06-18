@@ -1,9 +1,10 @@
 # stock_manager.py
 def print_inventory_report(items):
     print("===== INVENTORY REPORT =====")
-    # Error occurs in this loop - classic off-by-one error
-    for i in range(len(items) + 1):  # Notice the + 1 here
-        print(f"Item {i+1}: {items[i]['name']} - Quantity: {items[i]['quantity']}")
+    # Number of items starting from 1 for user friendly display
+
+    for i, item in enumerate(items, start=1): 
+        print(f"Item {i}: {item['name']} - Quantity: {item['quantity']}")
     print("============================")
 
 def main():
