@@ -13,14 +13,15 @@ def find_product_combinations(products, target_price, price_margin=10):
         List of dictionaries with product pairs and their combined price
     """
     results = []
+    seen_pairs = set()
 
     # For each possible pair of products
     for i in range(len(products)):
         if i % 100 == 0:
             print(f"Processing product {i+1} of {len(products)}")
-        for j in range(len(products)):
+        for j in range(i+1, len(products)):
             # Skip comparing a product with itself
-            if i != j:
+    
                 product1 = products[i]
                 product2 = products[j]
 
@@ -30,7 +31,7 @@ def find_product_combinations(products, target_price, price_margin=10):
                 # Check if the combined price is within the target range
                 if (target_price - price_margin) <= combined_price <= (target_price + price_margin):
                     # Avoid duplicates like (product1, product2) and (product2, product1)
-                    if not any(r['product1']['id'] == product2['id'] and
+                    if not any(['product1']['id'] == product2['id'] and
                                r['product2']['id'] == product1['id'] for r in results):
 
                         pair = {
